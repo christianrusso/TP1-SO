@@ -1,0 +1,20 @@
+\subsection{Explicacion de la implementacion}
+Para implementar \footnote{La implementacion de este scheduler se puede encontrar en el archivo \textit{sched\_lottery.cpp}.} esta política de scheduling utilizamos:
+\begin{itemize}
+	\item Un entero para llevar la cuenta de cuantos tickets hay en total entre todos los procesos \textit{ready}.
+	\item Un diccionario donde la clave es el \textit{pid} del proceso y el valor es la cantidad de tickets que tiene dicho proceso. Solo los procesos \textit{ready} están definidos en esta estructura.
+	\item Otro diccionario indexado por el \textit{pid} del proceso que permite sabe, en caso de que el proceso se haya bloqueado, cuantos ciclos de su \textit{quantum} utilizo.
+\end{itemize}
+
+
+Lo primero que hacemos es utilizar la semilla pasada como parámetro al constructor del scheduler para inicializar el generador de números pseudo-aleatorio con la función: \textit{srand(semilla)}.
+
+Cada vez que un proceso se añade al scheduler, le otorgamos un valor constante de tickets \textit{(1000 tickets)}.
+De esta forma, todos los procesos tienen, a priori, la misma probabilidad de ganar el uso del procesador.
+Cuando un proceso gana el uso procesador, este lo tiene asignado durante un quantum \textit{(parámetro del scheduler)} y luego es desalojado.
+
+Cuando un proceso se bloquea determinamos la cantidad \textbf{C} de ciclos del quantum asignado que utilizo, es decir, restar al Quantum del CPU la cantidad de ciclos utilizados por el proceso actual en el núcleo actual \textit{(este valor lo tenemos en un vector para cada núcleo)}.
+Luego, cuando se desbloquea le otorgamos el \textit{compensation ticket} de forma que su cantidad total de tickets pasa a ser: $tickets$ $*$ $quantum$ $/$ $ciclosUtilizados$.
+Cuando un proceso con un \textit{compensation ticket} gana el uso del procesador, pierde dicho ticket.
+
+Para determinar cual es el proceso que gana el uso del procesador, llevamos a cabo una lotería entre todos los procesos \textit{ready}. Es decir, elegimos un numero al azar entre cero y la cantidad total de tickets entre todos los procesos \textit{ready}, este sera el ticket ganador. Luego, recorremos el diccionario que contiene a todos los procesos \textit{ready} sumando en un contador la cantidad de tickets de cada proceso hasta encontrar el proceso que hace que el valor de dicha sumatoria sea mayor o igual que el valor del ticket ganador. Este sera el proceso que ganara el uso del procesador, entonces restamos los tickets de este proceso de la cantidad de tickets total y lo eliminamos de la estructura que contiene a todos los procesos \textit{ready}.

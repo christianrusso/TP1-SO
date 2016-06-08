@@ -1,0 +1,11 @@
+
+\subsection{Optimizaciones propuestas por el articulo}
+
+En el articulo se proponen algunas optimizaciones, a continuación nombramos cada una de ellas y el motivo por el cual fue o no fue implementada:
+\begin{itemize}
+	\item \textbf{Transferencia de tickets}: Esta optimizacion no la implementamos ya que,en el simulador utilizado, los procesos solo se bloquean a la espera de la E/S. Nunca se bloquean a la espera de otros procesos.
+	\item \textbf{Inflación de tickets}: No nos pareció correcto que un proceso tenga la capacidad de otorgarse todos los tickets que desee, ya que de esta forma un proceso podría monopolizar el procesador. 
+	\item \textbf{Tickets de compensación}: Fue implementado.
+	\item \textbf{Ticket currencies}: Dado que los procesos, en el simulador, no tienen procesos hijos ni hay varios usuarios ejecutando procesos, no nos pareció necesario implementarlo. Ademas, seria imposible testear dicha implementacion.
+	\item \textbf{Ordenar en forma decreciente la lista de procesos ready según la cantidad de tickets del proceso}: Esta es una optimizacion asintotica. Realmente harían falta muchos procesos para que tuviera un impacto notable, y por este motivo decidimos no implementarla.
+\end{itemize}

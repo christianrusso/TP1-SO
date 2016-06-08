@@ -1,0 +1,137 @@
+\subsection{Pseudocodigo}
+
+
+\begin{algorithm}[H]
+\caption{SchedLottert(vector<int> argn)}
+\label{pseudo:SchedLottery}
+\begin{algorithmic}
+
+\STATE BASE\_TICKETS = 1000
+\STATE cores = argn[0]
+\STATE cpuQuantum = argn[1]
+\STATE semilla = argn[2]
+\STATE srand(semilla)
+\STATE quantumActual = Vector<int> de tamaño cores y cpuQuantum en cada posición;
+\STATE procesos = Diccionario donde la clave es el pid del proceso y el valor asociado es la cantidad de tickets del proceso
+\STATE bloqueados = Diccionario donde la clave es el pid del proceso y el valor asociado es la cantidad de ciclos de su quantum que utilizo antes de bloquearse;
+\STATE ticketsTotales = 0
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{load(pid)}
+\label{pseudo:load}
+\begin{algorithmic}
+
+\STATE load(pid, 0)
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{load(pid,deadline)}
+\label{pseudo:loadD}
+\begin{algorithmic}
+
+\STATE procesos[pid] = BASE\_TICKETS
+\STATE ticketsTotales = ticketsTotales + BASE\_TICKETS
+
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{algorithm}[H]
+\caption{unblock(pid)}
+\label{pseudo:unblock}
+\begin{algorithmic}
+
+\STATE procesos[pid] = (BASE\_TICKETS * cpuQuantum / bloqueados[pid])
+\STATE ticketsTotales = ticketsTotales + procesos[pid]
+
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{algorithm}[H]
+\caption{tick(cpu , Motivo m)}
+\label{pseudo:tick}
+\begin{algorithmic}
+
+ \IF{(m == EXIT)}
+	\IF{(procesos.vacio())}
+		\STATE Devolver run\_idle\_task(cpu)
+	\ELSE
+		\STATE Devolver loteria(-1, cpu)	
+	\ENDIF
+	
+\IF{(m == BLOCK)}
+	\STATE bloqueados[current\_pid(cpu)] = cpuQuantum - quantumActual[cpu]
+	\IF{(procesos.vacio())}
+		\STATE Devolver run\_idle\_task(cpu)
+	\ELSE
+		\STATE Devolver loteria(-1, cpu)	
+	\ENDIF
+\ELSE
+	\STATE quantumActual[cpu] = quantumActual[cpu] -1	
+	\IF{(quantumActual[cpu] == 0)}
+		\IF{(procesos.vacio())}
+			\STATE Devolver current\_pid(cpu)
+		\ELSE
+			\STATE Devolver loteria(current\_pid(cpu), cpu)
+		\ENDIF
+	\ELSE
+		\STATE Devolver current\_pid(cpu)
+	\ENDIF
+\ENDIF
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\begin{algorithm}[H]
+\caption{loteria(pid, cpu)}
+\label{pseudo:loteria}
+\begin{algorithmic}
+
+\STATE quantumActual[cpu] = cpuQuantum
+
+\IF{(pid != -1)}
+	\STATE procesos[pid] = BASE\_TICKETS
+	\STATE ticketsTotales = ticketsTotales + BASE\_TICKETS
+\ENDIF
+
+\STATE ticketGanador = rand() \% (ticketsTotales + 1)
+\STATE procesoGanador = El pid de algún proceso
+\STATE sumatoria = 0
+
+\FOR{(Proceso p en procesos)}
+\STATE sumatoria = sumatoria + p.tickets
+\IF{(sumatoria $>=$ ticketGanador)}
+	\STATE procesoGanador = p.pid
+	\STATE Salir del for
+\ENDIF
+
+\ENDFOR
+
+\STATE ticketsTotales = ticketsTotales - procesos[procesoGanador]
+\STATE procesos.erase(procesoGanador)
+\STATE Devolver procesoGanador
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{run\_idle\_task(cpu)}
+\label{pseudo:runidletask}
+\begin{algorithmic}
+	\STATE quantumActual[cpu] = cpuQuantum
+	\STATE devolver IDLE\_TASK
+\end{algorithmic}
+\end{algorithm}
+

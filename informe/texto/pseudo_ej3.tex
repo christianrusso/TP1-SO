@@ -1,0 +1,124 @@
+\subsection{Pseudocodigo}
+
+Para este ejercicio manejamos una cola q en la cual tenemos todos los procesos ready.
+
+
+
+
+\begin{algorithm}[H]
+\caption{SchedRR(Vector<int> argn)}
+\label{pseudo:load}
+\begin{algorithmic}
+
+\STATE cantCores = argn[0]
+\STATE cpuQuantum = Vector<int> de tamaño cantCores y cero en todas las posiciones.
+\STATE quantumActual = Vector<int> de tamaño cantCores y cero en todas las posiciones.
+\FOR{($i=0$ hasta $cantCores$)}
+	\STATE quantumActual[i] = argn[i+2]
+	\STATE cpuQuantum[i] = argn[i+2]	
+\ENDFOR
+
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\begin{algorithm}[H]
+\caption{load(pid)}
+\label{pseudo:load}
+\begin{algorithmic}
+
+\STATE q.push(pid)
+
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{unblock(pid)}
+\label{pseudo:unblock}
+\begin{algorithmic}
+
+\STATE q.push(pid)
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{tick( cpu , Motivo m)}
+\label{pseudo:tick}
+\begin{algorithmic}
+
+ \IF{(m == EXIT o m == BLOCK)}
+	\IF{(q.vacia())}
+		\STATE Devolver run\_idle\_task(cpu)
+	\ELSE
+		\STATE quantumActual[cpu] = cpuQuantum[cpu]
+		\STATE prox = q.front()
+		\STATE q.pop()
+		\STATE Devolver prox		
+	\ENDIF
+\ELSE
+	\IF{(current\_pid(cpu) == IDLE\_TASK)}
+		\IF{(q.vacia())}
+			\STATE Devolver devolver run\_idle\_task(cpu)
+		\ELSE
+			\STATE Devolver proximo\_proceso(cpu)
+		\ENDIF
+	\ELSE
+		\STATE quantumActual[cpu] = quantumActual[cpu] - 1
+		\IF{(quantumActual[cpu] == 0)}
+			\IF{(q.vacia())}
+				\STATE quantumActual[cpu] = cpuQuantum[cpu]
+				\STATE Devolver current\_pid(cpu)
+			\ELSE
+				\STATE Devolver proximo\_proceso(cpu)
+			\ENDIF
+		\ELSE
+			\STATE Devolver current\_pid(cpu)
+		\ENDIF
+	\ENDIF
+	
+ \ENDIF
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{proximo\_proceso(cpu)}
+\label{pseudo:proximoproceso}
+\begin{algorithmic}
+
+\STATE quantumActual[cpu] = cpuQuantum[cpu]
+\STATE prox = q.front()
+\STATE q.pop()
+\IF{(current\_pid(cpu) != -1)}
+	\STATE cola.push(current\_pid(cpu))
+\ENDIF
+\STATE Devolver prox
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{run\_idle\_task(cpu)}
+\label{pseudo:runidletask}
+\begin{algorithmic}
+
+\STATE quantumActual[cpu] = cpuQuantum[cpu]
+\STATE Devolver IDLE\_TASK
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Explicación de la implementacion}
+
+Para implementar el scheduler Round Robin utilizamos una cola de procesos \textit{ready}. Cuando un núcleo del procesador queda libre \textit{(ya sea por que el proceso ejecutándose termino su quantum, se bloqueo o termino su ejecución)} hacemos que el próximo proceso a ejecutarse en ese núcleo sea el primer proceso en la cola de procesos \textit{ready} \textit{(en caso de no haber ninguno, el procesador queda idle)}.
+
+Cuando un proceso se desbloquea es colocado al final de la cola de procesos \textit{ready} a la espera de que algún núcleo del procesador quede libre para ejecutarse.
+
+Si un núcleo esta idle \textit{(es decir, ejecutando la tarea idle)} y no hay ningún proceso \textit{ready} para ejecutar, simplemente se queda a la espera de que algún proceso este \textit{ready}.

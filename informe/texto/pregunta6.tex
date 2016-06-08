@@ -1,0 +1,10 @@
+\section{Pregunta 6}
+
+\input{texto/enunciado6.tex}
+\input{texto/pseudo6.tex}
+
+Se crea un vector de tamaño $ciclosTotales$ (es la cantidad total de ciclos de uso de CPU de la tarea) inicializado en cero. Lo interpretaremos como un vector de booleanos, donde si la posición i esta en 1, es porque en el momento i se hace una llamada bloqueante y cero en caso de que sea un ciclo solo de uso de CPU. Al principio en todas los momentos se esta usando solo CPU.
+
+Luego se itera $entradasBloqueantes$ (es la cantidad de llamadas bloqueantes en la tarea) veces y se elije un momento al azar entre 0 y $ciclosTotales$. Si ese momento ya estaba ocupado ($ocupado[momento] = TRUE$) entonces se vuelve a elegir al azar para tomar otro momento. Luego se setea en uno indicando que habrá una llamada bloqueante en ese momento.
+
+Luego se recorre el vector y se ejecuta la tarea. Si el $ocupado[momento] = TRUE$ entonces se ejecuta un ciclo de uso de CPU y una llamada bloqueante, sino se ejecuta un solo ciclo de CPU.

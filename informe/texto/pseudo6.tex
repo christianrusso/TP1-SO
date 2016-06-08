@@ -1,0 +1,30 @@
+\subsection{Pseudocodigo}
+
+\begin{algorithm}[H]
+\caption{TaskBatch(pid,  params)}
+\label{pseudo:TaskBatch}
+\begin{algorithmic}
+
+\STATE ciclosTotales = params[0]
+\STATE entradasBloqueantes = params[1]
+\STATE vector<int> ocupado(ciclosTotales,0)
+\FOR{$i=0$ hasta $entradasBloqueantes$}
+    \STATE momento = rand() \% ciclosTotales 
+    \WHILE{ ocupado[momento]}
+	\STATE momento = rand() \% ciclosTotales
+    \ENDWHILE
+    
+    \STATE ocupado[momento] = 1
+\ENDFOR
+
+\FOR{$i=0$ hasta $ciclosTotales$}
+\IF{(ocupado[i])}
+	\STATE uso\_IO(pid, 1)
+\ELSE
+	\STATE uso\_CPU(pid, 1)
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Explicación de la implementacion}
